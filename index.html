@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 
+  Vici Video Editor App
+  Created by: [Hassan Ashraf]
+  Copyright © 2025 [Hassan Ashraf]
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description"
+        content="Vici - Professional video editing platform with quality enhancement, templates, and effects">
+    <meta name="theme-color" content="#DC2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vici">
+    <title>Vici - Premium Video Editor</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/timeline.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">V</span>
+                    <span class="logo-text">Vici</span>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" data-tab="edit">Edit</button>
+                    <button class="nav-tab" data-tab="enhance">Enhance</button>
+                    <button class="nav-tab" data-tab="templates">Templates</button>
+                    <button class="nav-tab" data-tab="effects">Effects</button>
+                    <button class="nav-tab" data-tab="stickers">Stickers</button>
+                    <button class="nav-tab" data-tab="audio">Audio</button>
+                    <button class="nav-tab" data-tab="text">Text</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-secondary" id="undoBtn" title="Undo">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v6h6M3 13a9 9 0 1 0 2.5-6.5L3 9" />
+                    </svg>
+                </button>
+                <button class="btn btn-secondary" id="redoBtn" title="Redo">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 7v6h-6M21 13a9 9 0 1 1-2.5-6.5L21 9" />
+                    </svg>
+                </button>
+                <button class="btn btn-primary" id="exportBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg>
+                    Export
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel - Media Library -->
+            <aside class="panel panel-left">
+                <div class="panel-header">
+                    <h3>Media Library</h3>
+                    <button class="btn btn-icon" id="importBtn" title="Import Media">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                            </svg>
+                        </div>
+                        <p class="upload-text">Tap to add from gallery</p>
+                        <p class="upload-subtext">Videos & Photos</p>
+                        <input type="file" id="fileInput" accept="video/*,image/*" multiple>
+                    </div>
+                    <div class="media-grid" id="mediaGrid"></div>
+                </div>
+            </aside>
+
+            <!-- Center - Preview -->
+            <section class="preview-section">
+                <div class="preview-container">
+                    <div class="preview-wrapper" id="previewWrapper">
+                        <video id="previewVideo" class="preview-video"></video>
+                        <canvas id="previewCanvas" class="preview-canvas"></canvas>
+                        <div class="preview-placeholder" id="previewPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            <p>Import a video to get started</p>
+                        </div>
+                    </div>
+                    <div class="preview-controls">
+                        <button class="control-btn" id="skipBackBtn" title="Skip Back">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="19 20 9 12 19 4 19 20" />
+                                <line x1="5" y1="19" x2="5" y2="5" />
+                            </svg>
+                        </button>
+                        <button class="control-btn control-btn-play" id="playBtn" title="Play/Pause">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="playIcon">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="pauseIcon"
+                                style="display:none">
+                                <rect x="6" y="4" width="4" height="16" />
+                                <rect x="14" y="4" width="4" height="16" />
+                            </svg>
+                        </button>
+                        <button class="control-btn" id="skipForwardBtn" title="Skip Forward">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="5 4 15 12 5 20 5 4" />
+                                <line x1="19" y1="5" x2="19" y2="19" />
+                            </svg>
+                        </button>
+                        <div class="time-display">
+                            <span id="currentTime">00:00</span>
+                            <span class="time-separator">/</span>
+                            <span id="totalTime">00:00</span>
+                        </div>
+                        <div class="control-spacer"></div>
+                        <button class="control-btn" id="volumeBtn" title="Volume">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                            </svg>
+                        </button>
+                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
+                        <button class="control-btn" id="fullscreenBtn" title="Fullscreen">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel - Properties -->
+            <aside class="panel panel-right">
+                <div class="panel-header">
+                    <h3>Properties</h3>
+                </div>
+                <div class="panel-content" id="propertiesPanel">
+                    <!-- Edit Tab Content -->
+                    <div class="tab-content active" data-tab="edit">
+                        <div class="property-group">
+                            <h4>Transform</h4>
+                            <div class="property-row">
+                                <label>Scale</label>
+                                <input type="range" class="slider" id="scaleSlider" min="50" max="200" value="100">
+                                <span class="slider-value" id="scaleValue">100%</span>
+                                <button class="keyframe-btn" data-property="scale" title="Add Keyframe">◆</button>
+                            </div>
+                            <div class="property-row">
+                                <label>Rotation</label>
+                                <input type="range" class="slider" id="rotationSlider" min="-180" max="180" value="0">
+                                <span class="slider-value" id="rotationValue">0°</span>
+                                <button class="keyframe-btn" data-property="rotation" title="Add Keyframe">◆</button>
+                            </div>
+                            <div class="property-row">
+                                <label>Position X</label>
+                                <input type="range" class="slider" id="posXSlider" min="-100" max="100" value="0">
+                                <span class="slider-value" id="posXValue">0</span>
+                                <button class="keyframe-btn" data-property="posX" title="Add Keyframe">◆</button>
+                            </div>
+                            <div class="property-row">
+                                <label>Position Y</label>
+                                <input type="range" class="slider" id="posYSlider" min="-100" max="100" value="0">
+                                <span class="slider-value" id="posYValue">0</span>
+                                <button class="keyframe-btn" data-property="posY" title="Add Keyframe">◆</button>
+                            </div>
+                            <div class="property-row">
+                                <label>Opacity</label>
+                                <input type="range" class="slider" id="opacitySlider" min="0" max="100" value="100">
+                                <span class="slider-value" id="opacityValue">100%</span>
+                                <button class="keyframe-btn" data-property="opacity" title="Add Keyframe">◆</button>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Speed Ramping</h4>
+                            <div class="property-row">
+                                <label>Speed</label>
+                                <input type="range" class="slider" id="speedSlider" min="10" max="800" value="100">
+                                <span class="slider-value" id="speedValue">1x</span>
+                            </div>
+                            <div class="speed-curve-options">
+                                <button class="curve-btn active" data-curve="linear">Linear</button>
+                                <button class="curve-btn" data-curve="ease-in">Ease In</button>
+                                <button class="curve-btn" data-curve="ease-out">Ease Out</button>
+                                <button class="curve-btn" data-curve="smooth">Smooth</button>
+                            </div>
+                            <div class="speed-presets">
+                                <button class="preset-btn" data-speed="25">0.25x</button>
+                                <button class="preset-btn" data-speed="50">0.5x</button>
+                                <button class="preset-btn active" data-speed="100">1x</button>
+                                <button class="preset-btn" data-speed="200">2x</button>
+                                <button class="preset-btn" data-speed="400">4x</button>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Green Screen</h4>
+                            <div class="greenscreen-controls">
+                                <div class="toggle-row">
+                                    <span>Enable Chroma Key</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="chromaKeyToggle">
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="property-row" id="chromaKeyColor" style="display:none;">
+                                    <label>Key Color</label>
+                                    <input type="color" class="color-input" id="keyColorPicker" value="#00ff00">
+                                </div>
+                                <div class="property-row" id="chromaKeySensitivity" style="display:none;">
+                                    <label>Sensitivity</label>
+                                    <input type="range" class="slider" id="keySensitivity" min="0" max="100" value="40">
+                                    <span class="slider-value" id="keySensitivityValue">40</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Layers</h4>
+                            <div class="layers-list" id="layersList">
+                                <div class="layer-item active">
+                                    <span class="layer-icon">🎬</span>
+                                    <span class="layer-name">Video Layer</span>
+                                    <button class="layer-btn" title="Toggle Visibility">👁️</button>
+                                    <button class="layer-btn" title="Lock">🔓</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-full" id="addLayerBtn">
+                                <span>+</span> Add Layer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Enhance Tab Content -->
+                    <div class="tab-content" data-tab="enhance">
+                        <div class="property-group">
+                            <h4>Quality Enhancement</h4>
+                            <div class="enhance-options">
+                                <button class="enhance-btn" data-enhance="auto">
+                                    <span class="enhance-icon">✨</span>
+                                    Auto Enhance
+                                </button>
+                                <button class="enhance-btn" data-enhance="hd">
+                                    <span class="enhance-icon">📺</span>
+                                    HD Upscale
+                                </button>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Adjustments</h4>
+                            <div class="property-row">
+                                <label>Brightness</label>
+                                <input type="range" class="slider" id="brightnessSlider" min="-100" max="100" value="0">
+                                <span class="slider-value" id="brightnessValue">0</span>
+                            </div>
+                            <div class="property-row">
+                                <label>Contrast</label>
+                                <input type="range" class="slider" id="contrastSlider" min="-100" max="100" value="0">
+                                <span class="slider-value" id="contrastValue">0</span>
+                            </div>
+                            <div class="property-row">
+                                <label>Saturation</label>
+                                <input type="range" class="slider" id="saturationSlider" min="-100" max="100" value="0">
+                                <span class="slider-value" id="saturationValue">0</span>
+                            </div>
+                            <div class="property-row">
+                                <label>Sharpness</label>
+                                <input type="range" class="slider" id="sharpnessSlider" min="0" max="100" value="0">
+                                <span class="slider-value" id="sharpnessValue">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Templates Tab Content -->
+                    <div class="tab-content" data-tab="templates">
+                        <div class="property-group">
+                            <h4>Intro Templates</h4>
+                            <div class="template-grid">
+                                <div class="template-card" data-template="intro-fade">
+                                    <div class="template-preview gradient-1"></div>
+                                    <span>Fade In</span>
+                                </div>
+                                <div class="template-card" data-template="intro-zoom">
+                                    <div class="template-preview gradient-2"></div>
+                                    <span>Zoom In</span>
+                                </div>
+                                <div class="template-card" data-template="intro-slide">
+                                    <div class="template-preview gradient-3"></div>
+                                    <span>Slide In</span>
+                                </div>
+                                <div class="template-card" data-template="intro-glitch">
+                                    <div class="template-preview gradient-4"></div>
+                                    <span>Glitch</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Transitions</h4>
+                            <div class="template-grid">
+                                <div class="template-card" data-template="trans-dissolve">
+                                    <div class="template-preview gradient-5"></div>
+                                    <span>Dissolve</span>
+                                </div>
+                                <div class="template-card" data-template="trans-wipe">
+                                    <div class="template-preview gradient-6"></div>
+                                    <span>Wipe</span>
+                                </div>
+                                <div class="template-card" data-template="trans-spin">
+                                    <div class="template-preview gradient-7"></div>
+                                    <span>Spin</span>
+                                </div>
+                                <div class="template-card" data-template="trans-blur">
+                                    <div class="template-preview gradient-8"></div>
+                                    <span>Blur</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Outro Templates</h4>
+                            <div class="template-grid">
+                                <div class="template-card" data-template="outro-fade">
+                                    <div class="template-preview gradient-9"></div>
+                                    <span>Fade Out</span>
+                                </div>
+                                <div class="template-card" data-template="outro-zoom">
+                                    <div class="template-preview gradient-10"></div>
+                                    <span>Zoom Out</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Effects Tab Content -->
+                    <div class="tab-content" data-tab="effects">
+                        <div class="property-group">
+                            <h4>Filters</h4>
+                            <div class="filter-grid">
+                                <div class="filter-card active" data-filter="none">
+                                    <div class="filter-preview"></div>
+                                    <span>None</span>
+                                </div>
+                                <div class="filter-card" data-filter="vintage">
+                                    <div class="filter-preview filter-vintage"></div>
+                                    <span>Vintage</span>
+                                </div>
+                                <div class="filter-card" data-filter="cinematic">
+                                    <div class="filter-preview filter-cinematic"></div>
+                                    <span>Cinematic</span>
+                                </div>
+                                <div class="filter-card" data-filter="bw">
+                                    <div class="filter-preview filter-bw"></div>
+                                    <span>B&W</span>
+                                </div>
+                                <div class="filter-card" data-filter="warm">
+                                    <div class="filter-preview filter-warm"></div>
+                                    <span>Warm</span>
+                                </div>
+                                <div class="filter-card" data-filter="cool">
+                                    <div class="filter-preview filter-cool"></div>
+                                    <span>Cool</span>
+                                </div>
+                                <div class="filter-card" data-filter="vivid">
+                                    <div class="filter-preview filter-vivid"></div>
+                                    <span>Vivid</span>
+                                </div>
+                                <div class="filter-card" data-filter="matte">
+                                    <div class="filter-preview filter-matte"></div>
+                                    <span>Matte</span>
+                                </div>
+                                <div class="filter-card" data-filter="neon">
+                                    <div class="filter-preview filter-neon"></div>
+                                    <span>Neon</span>
+                                </div>
+                                <div class="filter-card" data-filter="retro">
+                                    <div class="filter-preview filter-retro"></div>
+                                    <span>Retro</span>
+                                </div>
+                                <div class="filter-card" data-filter="dramatic">
+                                    <div class="filter-preview filter-dramatic"></div>
+                                    <span>Dramatic</span>
+                                </div>
+                                <div class="filter-card" data-filter="sepia">
+                                    <div class="filter-preview filter-sepia"></div>
+                                    <span>Sepia</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Special Effects</h4>
+                            <div class="effects-list">
+                                <button class="effect-btn" data-effect="blur">
+                                    <span class="effect-icon">🌫️</span>
+                                    Blur
+                                </button>
+                                <button class="effect-btn" data-effect="vignette">
+                                    <span class="effect-icon">⭕</span>
+                                    Vignette
+                                </button>
+                                <button class="effect-btn" data-effect="grain">
+                                    <span class="effect-icon">✨</span>
+                                    Film Grain
+                                </button>
+                                <button class="effect-btn" data-effect="glitch">
+                                    <span class="effect-icon">📺</span>
+                                    Glitch
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stickers Tab Content -->
+                    <div class="tab-content" data-tab="stickers">
+                        <div class="property-group">
+                            <h4>Emoji</h4>
+                            <div class="emoji-grid" id="emojiGrid">
+                                <button class="emoji-btn" data-emoji="😀">😀</button>
+                                <button class="emoji-btn" data-emoji="😂">😂</button>
+                                <button class="emoji-btn" data-emoji="🥰">🥰</button>
+                                <button class="emoji-btn" data-emoji="😎">😎</button>
+                                <button class="emoji-btn" data-emoji="🤩">🤩</button>
+                                <button class="emoji-btn" data-emoji="😱">😱</button>
+                                <button class="emoji-btn" data-emoji="🔥">🔥</button>
+                                <button class="emoji-btn" data-emoji="💯">💯</button>
+                                <button class="emoji-btn" data-emoji="❤️">❤️</button>
+                                <button class="emoji-btn" data-emoji="👍">👍</button>
+                                <button class="emoji-btn" data-emoji="👏">👏</button>
+                                <button class="emoji-btn" data-emoji="🎉">🎉</button>
+                                <button class="emoji-btn" data-emoji="⭐">⭐</button>
+                                <button class="emoji-btn" data-emoji="✨">✨</button>
+                                <button class="emoji-btn" data-emoji="💥">💥</button>
+                                <button class="emoji-btn" data-emoji="🚀">🚀</button>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Animated Stickers</h4>
+                            <div class="sticker-grid">
+                                <div class="sticker-card" data-sticker="arrow-up">
+                                    <span>⬆️</span>
+                                    <span>Arrow Up</span>
+                                </div>
+                                <div class="sticker-card" data-sticker="arrow-down">
+                                    <span>⬇️</span>
+                                    <span>Arrow Down</span>
+                                </div>
+                                <div class="sticker-card" data-sticker="like">
+                                    <span>👍</span>
+                                    <span>Like</span>
+                                </div>
+                                <div class="sticker-card" data-sticker="subscribe">
+                                    <span>🔔</span>
+                                    <span>Subscribe</span>
+                                </div>
+                                <div class="sticker-card" data-sticker="boom">
+                                    <span>💥</span>
+                                    <span>Boom</span>
+                                </div>
+                                <div class="sticker-card" data-sticker="sparkle">
+                                    <span>✨</span>
+                                    <span>Sparkle</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Shapes</h4>
+                            <div class="shapes-grid">
+                                <button class="shape-btn" data-shape="circle">⚪</button>
+                                <button class="shape-btn" data-shape="square">⬜</button>
+                                <button class="shape-btn" data-shape="triangle">🔺</button>
+                                <button class="shape-btn" data-shape="star">⭐</button>
+                                <button class="shape-btn" data-shape="heart">❤️</button>
+                                <button class="shape-btn" data-shape="arrow">➡️</button>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Import GIF</h4>
+                            <button class="btn btn-secondary btn-full" id="importGifBtn">
+                                <span>📁</span> Import from Gallery
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Audio Tab Content -->
+                    <div class="tab-content" data-tab="audio">
+                        <div class="property-group">
+                            <h4>Volume</h4>
+                            <div class="property-row">
+                                <label>Master</label>
+                                <input type="range" class="slider" id="masterVolumeSlider" min="0" max="200"
+                                    value="100">
+                                <span class="slider-value" id="masterVolumeValue">100%</span>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Audio Effects</h4>
+                            <div class="audio-options">
+                                <button class="audio-btn" data-audio="fade-in">
+                                    <span class="audio-icon">📈</span>
+                                    Fade In
+                                </button>
+                                <button class="audio-btn" data-audio="fade-out">
+                                    <span class="audio-icon">📉</span>
+                                    Fade Out
+                                </button>
+                                <button class="audio-btn" data-audio="mute">
+                                    <span class="audio-icon">🔇</span>
+                                    Mute
+                                </button>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Music Library</h4>
+                            <div class="music-categories">
+                                <button class="music-category active" data-category="trending">🔥 Trending</button>
+                                <button class="music-category" data-category="upbeat">🎵 Upbeat</button>
+                                <button class="music-category" data-category="chill">🌊 Chill</button>
+                                <button class="music-category" data-category="cinematic">🎬 Cinema</button>
+                            </div>
+                            <div class="music-list" id="musicList">
+                                <div class="music-item" data-track="energy-boost">
+                                    <div class="music-info">
+                                        <span class="music-title">Energy Boost</span>
+                                        <span class="music-duration">2:34</span>
+                                    </div>
+                                    <button class="music-play-btn">▶</button>
+                                    <button class="music-add-btn">+</button>
+                                </div>
+                                <div class="music-item" data-track="happy-vibes">
+                                    <div class="music-info">
+                                        <span class="music-title">Happy Vibes</span>
+                                        <span class="music-duration">3:12</span>
+                                    </div>
+                                    <button class="music-play-btn">▶</button>
+                                    <button class="music-add-btn">+</button>
+                                </div>
+                                <div class="music-item" data-track="sunset-dreams">
+                                    <div class="music-info">
+                                        <span class="music-title">Sunset Dreams</span>
+                                        <span class="music-duration">2:45</span>
+                                    </div>
+                                    <button class="music-play-btn">▶</button>
+                                    <button class="music-add-btn">+</button>
+                                </div>
+                                <div class="music-item" data-track="epic-journey">
+                                    <div class="music-info">
+                                        <span class="music-title">Epic Journey</span>
+                                        <span class="music-duration">4:20</span>
+                                    </div>
+                                    <button class="music-play-btn">▶</button>
+                                    <button class="music-add-btn">+</button>
+                                </div>
+                                <div class="music-item" data-track="chill-lofi">
+                                    <div class="music-info">
+                                        <span class="music-title">Chill Lo-Fi</span>
+                                        <span class="music-duration">3:30</span>
+                                    </div>
+                                    <button class="music-play-btn">▶</button>
+                                    <button class="music-add-btn">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group">
+                            <h4>Import Audio</h4>
+                            <button class="btn btn-secondary btn-full" id="addMusicBtn">
+                                📁 Import from Device
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Text Tab Content -->
+                    <div class="tab-content" data-tab="text">
+                        <div class="property-group">
+                            <h4>Add Text</h4>
+                            <button class="btn btn-primary btn-full" id="addTextBtn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="4 7 4 4 20 4 20 7" />
+                                    <line x1="9" y1="20" x2="15" y2="20" />
+                                    <line x1="12" y1="4" x2="12" y2="20" />
+                                </svg>
+                                Add Text Layer
+                            </button>
+                        </div>
+                        <div class="property-group">
+                            <h4>Text Styles</h4>
+                            <div class="text-styles-grid">
+                                <div class="text-style-card" data-style="title">
+                                    <span class="text-preview title-preview">Title</span>
+                                </div>
+                                <div class="text-style-card" data-style="subtitle">
+                                    <span class="text-preview subtitle-preview">Subtitle</span>
+                                </div>
+                                <div class="text-style-card" data-style="caption">
+                                    <span class="text-preview caption-preview">Caption</span>
+                                </div>
+                                <div class="text-style-card" data-style="quote">
+                                    <span class="text-preview quote-preview">"Quote"</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-group text-editor hidden" id="textEditor">
+                            <h4>Edit Text</h4>
+                            <div class="property-row">
+                                <label>Content</label>
+                                <input type="text" class="text-input" id="textContent" placeholder="Enter text...">
+                            </div>
+                            <div class="property-row">
+                                <label>Font Size</label>
+                                <input type="range" class="slider" id="fontSizeSlider" min="12" max="120" value="48">
+                                <span class="slider-value" id="fontSizeValue">48px</span>
+                            </div>
+                            <div class="property-row">
+                                <label>Color</label>
+                                <input type="color" class="color-input" id="textColor" value="#ffffff">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Timeline -->
+        <footer class="timeline-container">
+            <div class="timeline-toolbar">
+                <div class="timeline-tools">
+                    <button class="tool-btn active" data-tool="select" title="Select">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="cut" title="Cut">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="6" cy="6" r="3" />
+                            <circle cx="6" cy="18" r="3" />
+                            <line x1="20" y1="4" x2="8.12" y2="15.88" />
+                            <line x1="14.47" y1="14.48" x2="20" y2="20" />
+                            <line x1="8.12" y1="8.12" x2="12" y2="12" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="trim" title="Trim">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </button>
+                    <div class="tool-separator"></div>
+                    <button class="tool-btn" id="splitBtn" title="Split Clip">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="3" x2="12" y2="21" />
+                            <polyline points="8 8 4 12 8 16" />
+                            <polyline points="16 8 20 12 16 16" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" id="deleteBtn" title="Delete">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="timeline-zoom">
+                    <button class="zoom-btn" id="zoomOutBtn">−</button>
+                    <input type="range" class="zoom-slider" id="zoomSlider" min="1" max="10" value="5">
+                    <button class="zoom-btn" id="zoomInBtn">+</button>
+                </div>
+            </div>
+            <div class="timeline-wrapper">
+                <div class="timeline-ruler" id="timelineRuler"></div>
+                <div class="timeline-tracks" id="timelineTracks">
+                    <div class="track" data-track="video">
+                        <div class="track-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+                                <line x1="7" y1="2" x2="7" y2="22" />
+                                <line x1="17" y1="2" x2="17" y2="22" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <line x1="2" y1="7" x2="7" y2="7" />
+                                <line x1="2" y1="17" x2="7" y2="17" />
+                                <line x1="17" y1="17" x2="22" y2="17" />
+                                <line x1="17" y1="7" x2="22" y2="7" />
+                            </svg>
+                            Video
+                        </div>
+                        <div class="track-content" id="videoTrack"></div>
+                    </div>
+                    <div class="track" data-track="audio">
+                        <div class="track-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 18V5l12-2v13" />
+                                <circle cx="6" cy="18" r="3" />
+                                <circle cx="18" cy="16" r="3" />
+                            </svg>
+                            Audio
+                        </div>
+                        <div class="track-content" id="audioTrack"></div>
+                    </div>
+                    <div class="track" data-track="text">
+                        <div class="track-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="4 7 4 4 20 4 20 7" />
+                                <line x1="9" y1="20" x2="15" y2="20" />
+                                <line x1="12" y1="4" x2="12" y2="20" />
+                            </svg>
+                            Text
+                        </div>
+                        <div class="track-content" id="textTrack"></div>
+                    </div>
+                </div>
+                <div class="timeline-playhead" id="playhead">
+                    <div class="playhead-head"></div>
+                    <div class="playhead-line"></div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Text Overlay Modal -->
+        <div class="modal hidden" id="textModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Text</h3>
+                    <button class="modal-close" id="closeTextModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Text Content</label>
+                        <input type="text" class="form-input" id="newTextContent" placeholder="Enter your text...">
+                    </div>
+                    <div class="form-group">
+                        <label>Style</label>
+                        <select class="form-select" id="newTextStyle">
+                            <option value="title">Title</option>
+                            <option value="subtitle">Subtitle</option>
+                            <option value="caption">Caption</option>
+                            <option value="quote">Quote</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelTextBtn">Cancel</button>
+                    <button class="btn btn-primary" id="confirmTextBtn">Add Text</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Modal -->
+        <div class="modal hidden" id="exportModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Export Video</h3>
+                    <button class="modal-close" id="closeExportModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="export-options">
+                        <div class="export-option" data-quality="720">
+                            <div class="export-quality">720p</div>
+                            <div class="export-desc">HD Ready</div>
+                        </div>
+                        <div class="export-option active" data-quality="1080">
+                            <div class="export-quality">1080p</div>
+                            <div class="export-desc">Full HD</div>
+                        </div>
+                        <div class="export-option" data-quality="4k">
+                            <div class="export-quality">4K</div>
+                            <div class="export-desc">Ultra HD</div>
+                        </div>
+                    </div>
+                    <div class="export-progress hidden" id="exportProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress-text" id="progressText">Preparing...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelExportBtn">Cancel</button>
+                    <button class="btn btn-primary" id="confirmExportBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+    <footer>
+        <p>Created by [Hassan Ashraf] | © 2025</p>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ( 'serviceWorker' in navigator ) {
+            window.addEventListener( 'load', () => {
+                navigator.serviceWorker.register( '/sw.js' )
+                    .then( reg => console.log( 'Service Worker registered' ) )
+                    .catch( err => console.log( 'Service Worker registration failed:', err ) );
+            } );
+        }
+
+        // Handle shared files from gallery
+        navigator.serviceWorker?.addEventListener( 'message', event => {
+            if ( event.data.type === 'SHARED_MEDIA' && window.vici ) {
+                event.data.files.forEach( file => window.vici.video.addMedia( file ) );
+            }
+        } );
+
+        // PWA Install prompt
+        let deferredPrompt;
+        window.addEventListener( 'beforeinstallprompt', ( e ) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show install button option
+            console.log( 'App can be installed' );
+        } );
+    </script>
+</body>
+
+</html>
