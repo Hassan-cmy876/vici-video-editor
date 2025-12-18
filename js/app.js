@@ -477,3 +477,15 @@ class ViciApp {
 document.addEventListener('DOMContentLoaded', () => {
     window.vici = new ViciApp();
 });
+
+// Simple mobile panel toggle
+if (window.innerWidth <= 768) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.panel-header').forEach(header => {
+      header.style.cursor = 'pointer';
+      header.addEventListener('click', () => {
+        header.parentElement.classList.toggle('expanded');
+      });
+    });
+  });
+}
