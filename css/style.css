@@ -1596,3 +1596,62 @@ body {
     height: 180px !important;
   }
 }
+
+/* MOBILE FIX - Scrollable Panels */
+@media (max-width: 768px) {
+  html, body {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+  
+  #app {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  .main-content {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* Make panels take limited height */
+  .panel-left,
+  .panel-right {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px !important;
+    position: static !important;
+    overflow-y: auto !important;
+    flex-shrink: 0;
+  }
+  
+  .panel-content {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Preview area */
+  .preview-section {
+    height: 400px !important;
+    flex: none !important;
+  }
+  
+  /* Timeline */
+  .timeline-container {
+    position: static !important;
+    height: 200px !important;
+    flex-shrink: 0;
+  }
+  
+  /* Compact header */
+  .header {
+    flex-wrap: wrap;
+  }
+  
+  .nav-tabs {
+    overflow-x: auto;
+    width: 100%;
+    order: 3;
+  }
+}
