@@ -1,0 +1,70 @@
+/* MOBILE FIX - FORCE SCROLLING */
+@media (max-width: 768px) {
+  * {
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  html {
+    height: auto !important;
+    overflow-y: scroll !important;
+  }
+  
+  body {
+    height: auto !important;
+    overflow-y: scroll !important;
+    position: relative !important;
+  }
+  
+  #app {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+  
+  .main-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+    flex: none !important;
+  }
+  
+  .panel-left,
+  .panel-right {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 350px !important;
+    position: relative !important;
+    overflow-y: auto !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .panel-content {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+  }
+  
+  .preview-section {
+    height: 400px !important;
+    flex: none !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .timeline-container {
+    height: 200px !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .header {
+    flex-wrap: wrap;
+  }
+  
+  .nav-tabs {
+    width: 100%;
+    overflow-x: auto;
+    order: 3;
+  }
+}
