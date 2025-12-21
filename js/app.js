@@ -478,3 +478,40 @@ document.addEventListener('DOMContentLoaded', () => {
     window.vici = new ViciApp();
 });
 
+// Force mobile layout
+if (window.innerWidth <= 768) {
+    window.addEventListener('load', () => {
+        // Force scrolling
+        document.documentElement.style.overflow = 'auto';
+        document.documentElement.style.height = 'auto';
+        document.body.style.overflow = 'auto';
+        document.body.style.height = 'auto';
+        
+        const app = document.getElementById('app');
+        app.style.height = 'auto';
+        app.style.overflow = 'visible';
+        
+        const mainContent = document.querySelector('.main-content');
+        mainContent.style.flexDirection = 'column';
+        mainContent.style.height = 'auto';
+        mainContent.style.overflow = 'visible';
+        
+        // Make panels scrollable
+        document.querySelectorAll('.panel').forEach(panel => {
+            panel.style.width = '100%';
+            panel.style.height = 'auto';
+            panel.style.maxHeight = '350px';
+            panel.style.position = 'relative';
+        });
+        
+        // Fix preview
+        const preview = document.querySelector('.preview-section');
+        preview.style.height = '400px';
+        preview.style.flex = 'none';
+        
+        // Fix timeline
+        const timeline = document.querySelector('.timeline-container');
+        timeline.style.position = 'relative';
+        timeline.style.height = '200px';
+    });
+}
