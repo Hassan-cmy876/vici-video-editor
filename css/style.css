@@ -68,20 +68,16 @@
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 
-/* Desktop only - lock overflow */
-@media (min-width: 769px) {
-  html, body {
-    overflow: hidden;
-  }
-}
-
-/* Mobile - allow scroll */
 @media (max-width: 768px) {
-  html, body {
-    overflow: auto;
-    height: auto;
+  html {
+    overflow-y: visible;
+  }
+  body {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -124,6 +120,13 @@ body {
       transparent 50%
     ),
     var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+  #app {
+    height: auto !important;
+    min-height: 100vh;
+  }
 }
 
 /* Header */
